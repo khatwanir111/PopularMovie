@@ -55,6 +55,11 @@ public class MoviesFragment extends Fragment  {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        sharedPref.registerOnSharedPreferenceChangeListener(listener);
+    }
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -127,16 +132,8 @@ public class MoviesFragment extends Fragment  {
         return gridItems;
 
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        sharedPref.unregisterOnSharedPreferenceChangeListener(listener);
-    }
-
     private String selectBaseUrl() {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sharedPref.registerOnSharedPreferenceChangeListener(listener);
         String sort = sharedPref.getString(getString(R.string.key_sort_by), getString(R.string.popular_value));
 
         if (sort.equals(getString(R.string.popular_value))) {
