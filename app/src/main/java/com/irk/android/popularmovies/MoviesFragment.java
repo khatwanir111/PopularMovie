@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,6 +60,7 @@ public class MoviesFragment extends Fragment  {
         super.onResume();
         sharedPref.registerOnSharedPreferenceChangeListener(listener);
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,7 +157,9 @@ public class MoviesFragment extends Fragment  {
             mMoviesAdapter.clear();
             if (gridItems != null) {
                 mMoviesAdapter.addAll(gridItems);
-            }
+            } else {
+                Toast.makeText(getActivity(), "Something went wrong, please check your internet connection and try again!", Toast.LENGTH_SHORT).show();
+            } 
         }
 
         @Override
