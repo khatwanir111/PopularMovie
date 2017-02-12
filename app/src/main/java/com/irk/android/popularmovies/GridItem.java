@@ -11,6 +11,7 @@ public class GridItem {
     private String plot;
     private Double rating;
     private String releaseDate;
+    private int id;
 
     public GridItem() {
         super();
@@ -35,6 +36,10 @@ public class GridItem {
         this.releaseDate = releaseDate;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -53,6 +58,10 @@ public class GridItem {
 
     public String getReleaseDate() {
         return releaseDate;
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

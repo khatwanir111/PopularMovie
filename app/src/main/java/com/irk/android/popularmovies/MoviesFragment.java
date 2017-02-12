@@ -83,12 +83,18 @@ public class MoviesFragment extends Fragment  {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GridItem poster = mMoviesAdapter.getItem(position);
+
+                Bundle bundle = new Bundle();
+                bundle.putString(getString(R.string.title), poster.getTitle());
+                bundle.putString(getString(R.string.poster), poster.getPoster());
+                bundle.putString(getString(R.string.plot), poster.getPlot());
+                bundle.putString(getString(R.string.rating), poster.getRating().toString());
+                bundle.putString(getString(R.string.release_date), poster.getReleaseDate());
+                bundle.putString(getString(R.string.id), String.valueOf(poster.getId()));
+
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(getString(R.string.title), poster.getTitle());
-                intent.putExtra(getString(R.string.poster), poster.getPoster());
-                intent.putExtra(getString(R.string.plot), poster.getPlot());
-                intent.putExtra(getString(R.string.rating), poster.getRating().toString());
-                intent.putExtra(getString(R.string.release_date), poster.getReleaseDate());
+                intent.putExtras(bundle);
+
                 startActivity(intent);
             }
         });
@@ -104,6 +110,7 @@ public class MoviesFragment extends Fragment  {
         final String TMDB_PLOT = "overview";
         final String TMDB_RATING = "vote_average";
         final String TMDB_RELEASEDATE = "release_date";
+        final String TMDB_ID = "id";
         final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/w185";
 
         JSONObject jsonObject = new JSONObject(posterJsonStr);
@@ -120,6 +127,7 @@ public class MoviesFragment extends Fragment  {
             String plot = movieInfo.getString(TMDB_PLOT);
             Double rating = movieInfo.getDouble(TMDB_RATING);
             String release_date = movieInfo.getString(TMDB_RELEASEDATE);
+            int id = movieInfo.getInt(TMDB_ID);
             String POSTER_URL = POSTER_BASE_URL + posterPath;
 
             item = new GridItem();
@@ -129,6 +137,7 @@ public class MoviesFragment extends Fragment  {
             item.setPlot(plot);
             item.setRating(rating);
             item.setReleaseDate(release_date);
+            item.setId(id);
             gridItems.add(item);
         }
         return gridItems;

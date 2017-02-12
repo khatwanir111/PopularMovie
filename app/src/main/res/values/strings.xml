@@ -15,4 +15,7 @@
     <string name="release_date"> Release Date</string>
     <string name="movie_detail">Movie Detail</string>
     <string name="out_of_ten">/10</string>
+    <string name="trailer">Trailers:</string>
+    <string name="favorites">Favorites</string>
+    <string name="id">id</string>
 </resources>

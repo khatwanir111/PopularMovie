@@ -104,6 +104,10 @@
         "source": "C:\\Users\\Rajesh\\AndroidStudioProjects\\PopularMovies\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.0.1\\res\\layout\\notification_template_part_time.xml"
     },
     {
+        "merged": "C:\\Users\\Rajesh\\AndroidStudioProjects\\PopularMovies\\app\\build\\intermediates\\res\\merged\\debug\\layout\\trailer_list_item.xml",
+        "source": "C:\\Users\\Rajesh\\AndroidStudioProjects\\PopularMovies\\app\\src\\main\\res\\layout\\trailer_list_item.xml"
+    },
+    {
         "merged": "C:\\Users\\Rajesh\\AndroidStudioProjects\\PopularMovies\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_up_container.xml",
         "source": "C:\\Users\\Rajesh\\AndroidStudioProjects\\PopularMovies\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\25.0.1\\res\\layout\\abc_action_bar_up_container.xml"
     },
