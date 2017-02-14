@@ -1,7 +1,5 @@
 package com.irk.android.popularmovies;
 
-import static android.R.attr.name;
-
 /**
  * Created by Rajesh on 10-Feb-17.
  */

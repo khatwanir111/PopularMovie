@@ -7,17 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -34,22 +30,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static android.R.attr.focusable;
-import static android.R.attr.key;
-
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<TrailerItem>> {
 
     public DetailFragment() {
     }
 
     private static final int TRAILER_LOADER = 22;
-    private ArrayAdapter<String> mTrailerAdapter;
-    private ListView listView;
     private String TRAILER_BASE_URL;
+    private ProgressBar trailerProgressBar;
+    private URL url;
+    View rootView;
+    ScrollView scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.fragment_detail, container, false);
+        rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        scrollView = (ScrollView) container.findViewById(R.id.scrollView);
+
+        trailerProgressBar = (ProgressBar) rootView.findViewById(R.id.trailer_pb);
+        trailerProgressBar.setVisibility(View.INVISIBLE);
 
         Intent intent = getActivity().getIntent();
 
@@ -58,20 +57,20 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
             if (bundle != null) {
                 String title = bundle.getString(getString(R.string.title));
-                ((TextView) rootview.findViewById(R.id.title)).setText(title);
+                ((TextView) rootView.findViewById(R.id.title)).setText(title);
 
                 String poster = bundle.getString(getString(R.string.poster));
-                ImageView imageView = (ImageView) rootview.findViewById(R.id.detail_poster);
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_poster);
                 Picasso.with(getContext()).load(poster).into(imageView);
 
                 String releaseDate = bundle.getString(getString(R.string.release_date));
-                ((TextView) rootview.findViewById(R.id.release_date)).setText(releaseDate);
+                ((TextView) rootView.findViewById(R.id.release_date)).setText(releaseDate);
 
                 String rating = bundle.getString(getString(R.string.rating));
-                ((TextView) rootview.findViewById(R.id.rating)).setText(rating);
+                ((TextView) rootView.findViewById(R.id.rating)).setText(rating);
 
                 String plot = bundle.getString(getString(R.string.plot));
-                ((TextView) rootview.findViewById(R.id.plot)).setText(plot);
+                ((TextView) rootView.findViewById(R.id.plot)).setText(plot);
 
                 String id = bundle.getString(getString(R.string.id));
                 TRAILER_BASE_URL = "http://api.themoviedb.org/3/movie/" + id + "/videos";
@@ -88,12 +87,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             loaderManager.restartLoader(TRAILER_LOADER, null, this).forceLoad();
         }
 
-        mTrailerAdapter = new ArrayAdapter<String>(getActivity(), R.layout.trailer_list_item, R.id.trailer_text_view, new ArrayList<String>());
-        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        listView = (ListView) rootView.findViewById(R.id.trailer_list_view);
-
-        listView.setAdapter(mTrailerAdapter);
-        return rootview;
+        return rootView;
     }
 
     public void openWebPage(String url) {
@@ -139,6 +133,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         return new AsyncTaskLoader<ArrayList<TrailerItem>>(getContext()) {
 
             private final String LOG_TAG = DetailFragment.class.getSimpleName();
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                trailerProgressBar.setVisibility(View.VISIBLE);
+            }
 
             @Override
             public ArrayList<TrailerItem> loadInBackground() {
@@ -206,11 +206,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<ArrayList<TrailerItem>> loader, ArrayList<TrailerItem> data) {
+
+        trailerProgressBar.setVisibility(View.INVISIBLE);
         final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
         final String YOUTUBE_QUERY = "v";
         String key;
         String name;
-        mTrailerAdapter.clear();
+
         for (int i = 0; i < data.size(); i++) {
 
         if (data != null) {
@@ -219,20 +221,23 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             name = data.get(i).getTrailerName();
 
             Uri uri = Uri.parse(YOUTUBE_BASE_URL).buildUpon().appendQueryParameter(YOUTUBE_QUERY, key).build();
-            URL url = null;
+
             try {
                 url = new URL(uri.toString());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            mTrailerAdapter.add(name);
-            final URL finalUrl = url;
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            TextView trailerTitle = (TextView) rootView.findViewById(R.id.trailer_list_view);
+            trailerTitle.setText(name);
+
+            trailerTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    openWebPage(finalUrl.toString());
+                public void onClick(View v) {
+                    openWebPage(url.toString());
                 }
             });
+             scrollView.addView(trailerTitle);
 
         }
         }
