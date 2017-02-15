@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -37,18 +38,15 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int TRAILER_LOADER = 22;
     private String TRAILER_BASE_URL;
-    private ProgressBar trailerProgressBar;
     private URL url;
     View rootView;
-    ScrollView scrollView;
+    LinearLayout parentLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        scrollView = (ScrollView) container.findViewById(R.id.scrollView);
 
-        trailerProgressBar = (ProgressBar) rootView.findViewById(R.id.trailer_pb);
-        trailerProgressBar.setVisibility(View.INVISIBLE);
+        parentLayout = (LinearLayout) rootView.findViewById(R.id.parentLayout);
 
         Intent intent = getActivity().getIntent();
 
@@ -135,12 +133,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             private final String LOG_TAG = DetailFragment.class.getSimpleName();
 
             @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                trailerProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
             public ArrayList<TrailerItem> loadInBackground() {
                 final String API_KEY = "api_key";
                 String trailerJsonString;
@@ -207,7 +199,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onLoadFinished(Loader<ArrayList<TrailerItem>> loader, ArrayList<TrailerItem> data) {
 
-        trailerProgressBar.setVisibility(View.INVISIBLE);
         final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
         final String YOUTUBE_QUERY = "v";
         String key;
@@ -228,7 +219,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 e.printStackTrace();
             }
 
-            TextView trailerTitle = (TextView) rootView.findViewById(R.id.trailer_list_view);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 50);
+            layoutParams.setMargins(16,0,0,0);
+
+            TextView trailerTitle = new TextView(getContext());
+            trailerTitle.setLayoutParams(layoutParams);
             trailerTitle.setText(name);
 
             trailerTitle.setOnClickListener(new View.OnClickListener() {
@@ -237,7 +232,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     openWebPage(url.toString());
                 }
             });
-             scrollView.addView(trailerTitle);
+             parentLayout.addView(trailerTitle);
 
         }
         }
